@@ -1,11 +1,12 @@
 const supertest = require('supertest-session');
-const app = require('../index');
+const { app } = require('../index');
 
 const api = supertest(app);
 const Account = require('../models/Account');
 
 const {
   initialAccount,
+  createAccount,
 } = require('./helpers');
 
 beforeEach(async () => {
@@ -14,28 +15,26 @@ beforeEach(async () => {
 
 describe('CRUD for accounts', () => {
   test('Create an account', async () => {
-    const { status, body } = await api.post('/accounts/new').send(initialAccount);
+    const { status } = await api.post('/accounts/new').send(initialAccount);
     expect(status).toBe(201);
-    expect(body).toHaveProperty('message');
-    expect(body.message).toHaveProperty('_id');
+    const response = await Account.findOne({});
+    expect(response.email).toBe(initialAccount.email);
   });
 
   test('Read an account', async () => {
-    const NewAccount = new Account(initialAccount);
-    const { _id: toReadId } = await NewAccount.save();
+    const toReadId = await createAccount();
     const { status, body } = await api.get('/accounts/byId')
-      .query({ id: toReadId.toString() });
+      .query({ id: toReadId });
     expect(status).toBe(200);
     expect(body).toHaveProperty('message');
-    expect(body.message).toHaveProperty('email');
     expect(body.message.email).toBe(initialAccount.email);
+    expect(body.message).not.toHaveProperty('password');
   });
 
   test('Update an account', async () => {
-    const NewAccount = new Account(initialAccount);
-    const { _id: toUpdateId } = await NewAccount.save();
+    const toUpdateId = await createAccount();
     const { status } = await api.post('/accounts/updateById')
-      .send({ id: toUpdateId, data: { ...initialAccount, email: 'updatedEmail@company.com' } });
+      .send({ id: toUpdateId, data: { email: 'updatedEmail@company.com' } });
     // TODO: corner situations: hash new password!, check email company!
     expect(status).toBe(200);
     const response = await Account.findById(toUpdateId);
@@ -44,8 +43,7 @@ describe('CRUD for accounts', () => {
   });
 
   test('Remove an account', async () => {
-    const NewAccount = new Account(initialAccount);
-    const { _id: toDeleteId } = await NewAccount.save();
+    const toDeleteId = await createAccount();
     const { status } = await api.delete('/accounts/byId').send({ id: toDeleteId });
     expect(status).toBe(200);
     const response = await Account.findById(toDeleteId);
@@ -53,28 +51,34 @@ describe('CRUD for accounts', () => {
   });
 
   test('Log in user', async () => {
-    const NewAccount = new Account(initialAccount);
-    await NewAccount.save();
+    await createAccount();
     const { status, header } = await api.post('/accounts/login').send({ email: initialAccount.email, password: initialAccount.password });
     expect(status).toBe(302);
     expect(header.location).toBe('/');
   });
 
-  test('Check logged in', async () => {
-    const NewAccount = new Account(initialAccount);
-    await NewAccount.save();
+  test('Check logged in when is logged', async () => {
+    await createAccount;
     await api.post('/accounts/login').send({ email: initialAccount.email, password: initialAccount.password });
     const { status } = await api.get('/accounts/isLogged');
     expect(status).toBe(200);
   });
 
+  test('Check logged when is not logged', async () => {
+    await createAccount;
+    await api.post('/accounts/logout');
+    const { status, header } = await api.get('/accounts/isLogged');
+    expect(status).toBe(302);
+    expect(header.location).toBe('/login');
+  });
+
   test('Logout user', async () => {
-    const NewAccount = new Account(initialAccount);
-    NewAccount.save();
+    await createAccount();
     await api.post('/accounts/login').send({ email: initialAccount.email, password: initialAccount.password });
     const { status } = await api.post('/accounts/logout');
     expect(status).toBe(200);
-    const { status: status2 } = await api.get('/accounts/isLogged');
-    expect(status2).toBe(401);
+    const { status: status2, header } = await api.get('/accounts/isLogged');
+    expect(status2).toBe(302);
+    expect(header.location).toBe('/login');
   });
 });

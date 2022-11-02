@@ -6,7 +6,10 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const app = express();
-const accountRouter = require('./routers/accounts');
+const accountsRouter = require('./routers/accounts');
+const productRouter = require('./routers/products');
+const cartsRouter = require('./routers/carts');
+const ordersRouter = require('./routers/orders');
 
 app.use(cors());
 app.use(session({
@@ -18,7 +21,10 @@ app.use(session({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/accounts', accountRouter);
+app.use('/accounts', accountsRouter);
+app.use('/products', productRouter);
+app.use('/carts', cartsRouter);
+app.use('/orders', ordersRouter);
 
 const DB_CONN_URL = process.env.NODE_ENV === 'test' ? process.env.DB_URL_TEST : process.env.DB_URL_DEV;
 mongoose.connect(DB_CONN_URL).then(() => {
@@ -29,4 +35,6 @@ mongoose.connect(DB_CONN_URL).then(() => {
   }
 });
 
-module.exports = app;
+module.exports = {
+  app,
+};
