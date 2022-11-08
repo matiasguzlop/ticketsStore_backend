@@ -12,6 +12,7 @@ const newProduct = async (req, res) => {
     handleErrors(error, res);
   }
 };
+
 const getById = async (req, res) => {
   try {
     const { id } = req.query;
@@ -25,6 +26,7 @@ const getById = async (req, res) => {
     handleErrors(error, res);
   }
 };
+
 const getAll = async (req, res) => {
   try {
     const response = await Product.find({});
@@ -35,6 +37,7 @@ const getAll = async (req, res) => {
     handleErrors(error, res);
   }
 };
+
 const update = async (req, res) => {
   try {
     const { id, data } = req.body;
@@ -48,6 +51,7 @@ const update = async (req, res) => {
     handleErrors(error, res);
   }
 };
+
 const deleteById = async (req, res) => {
   try {
     const { id } = req.body;

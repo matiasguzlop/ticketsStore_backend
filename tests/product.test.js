@@ -55,3 +55,21 @@ describe('CRUD for products', () => {
     expect(response).toHaveLength(0);
   });
 });
+
+describe('Sets and gets for available property', () => {
+  test('Read product available property', async () => {
+    const toReadId = await createProduct();
+    const { status, body } = await api.get('/products/byId').query({ id: toReadId });
+    expect(status).toBe(200);
+    expect(body.message.available).toBe(product1.available);
+  });
+
+  test('Set product available different from initial value', async () => {
+    const toSetId = await createProduct();
+    const { status } = await api.post('/products/update')
+      .send({ id: toSetId, data: { available: !product1.available } });
+    expect(status).toBe(200);
+    const result = await Product.findById(toSetId);
+    expect(result.available).toBe(!product1.available);
+  });
+});

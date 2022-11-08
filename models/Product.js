@@ -9,6 +9,9 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  available: {
+    type: Boolean,
+  },
   createdAt: {
     type: Date,
     default: new Date(),

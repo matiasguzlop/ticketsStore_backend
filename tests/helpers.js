@@ -19,6 +19,7 @@ const adminAccount = {
 const product1 = {
   name: 'Gas de 15kg',
   price: 25000,
+  available: true,
 };
 
 const cart1 = {
