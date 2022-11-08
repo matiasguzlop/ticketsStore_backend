@@ -20,6 +20,7 @@ const product1 = {
   name: 'Gas de 15kg',
   price: 25000,
   available: true,
+  stock: 100,
 };
 
 const cart1 = {
