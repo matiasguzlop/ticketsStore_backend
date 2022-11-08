@@ -3,6 +3,7 @@ const Product = require('../models/Product');
 const Cart = require('../models/Cart');
 const Order = require('../models/Order');
 const Store = require('../models/Store');
+const AllowedUser = require('../models/AllowedUser');
 
 const initialAccount = {
   email: 'matias@company.com',
@@ -26,6 +27,11 @@ const product1 = {
 const cart1 = {
   userId: '',
   products: [],
+};
+
+const allowedUser1 = {
+  email: 'mati@gmail.com',
+  phone: '+56912123133',
 };
 
 const createAccount = async () => {
@@ -66,7 +72,13 @@ const createOrder = async (accountId, productId = null) => {
 const createStore = async () => {
   const newStore = new Store({ open: true });
   const { _id } = await newStore.save();
-  return _id;
+  return _id.toString();
+};
+
+const createAllowedUser = async () => {
+  const newAllowedUser = new AllowedUser(allowedUser1);
+  const { _id } = newAllowedUser.save();
+  return _id.toString();
 };
 
 module.exports = {
@@ -79,4 +91,5 @@ module.exports = {
   createCart,
   createOrder,
   createStore,
+  createAllowedUser,
 };
