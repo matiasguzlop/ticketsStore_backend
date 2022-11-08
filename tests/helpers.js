@@ -1,3 +1,4 @@
+const { Store } = require('express-session');
 const Account = require('../models/Account');
 const Product = require('../models/Product');
 const Cart = require('../models/Cart');
@@ -60,6 +61,12 @@ const createOrder = async (accountId, productId = null) => {
   return _id.toString();
 };
 
+const createStore = async () => {
+  const newStore = new Store({ open: true });
+  const { _id } = await newStore.save();
+  return _id;
+};
+
 module.exports = {
   initialAccount,
   adminAccount,
@@ -69,4 +76,5 @@ module.exports = {
   createProduct,
   createCart,
   createOrder,
+  createStore,
 };
