@@ -36,7 +36,7 @@ describe('CRUD for cart', () => {
   test('Add a new product to the cart', async () => {
     const toAddProductId = await createProduct();
     const toUpdateCartId = await createCart(accountId);
-    const { status } = await api.post('/carts/updateProduct')
+    const { status } = await api.post('/carts/addProduct')
       .send({
         cartId: toUpdateCartId,
         productId: toAddProductId,
@@ -48,11 +48,11 @@ describe('CRUD for cart', () => {
     expect(cart.products[0].qty).toBe(10);
   });
 
-  test('Add a product to the cart, if the product exists, update qty', async () => {
+  test('Add a product to the cart, if the product exists, add qty', async () => {
     const toAddProductId = await createProduct();
     const toUpdateCartId = await createCart(accountId);
-    await api.post('/carts/updateProduct').send({ cartId: toUpdateCartId, productId: toAddProductId, qty: 1 });
-    const { status } = await api.post('/carts/updateProduct')
+    await api.post('/carts/addProduct').send({ cartId: toUpdateCartId, productId: toAddProductId, qty: 1 });
+    const { status } = await api.post('/carts/addProduct')
       .send({
         cartId: toUpdateCartId,
         productId: toAddProductId,
@@ -62,7 +62,7 @@ describe('CRUD for cart', () => {
     const cart = await Cart.findOne({});
     expect(cart.products).toHaveLength(1);
     expect(cart.products[0].productId.toString()).toBe(toAddProductId);
-    expect(cart.products[0].qty).toBe(5);
+    expect(cart.products[0].qty).toBe(6);
   });
 
   test('Remove product from cart', async () => {
