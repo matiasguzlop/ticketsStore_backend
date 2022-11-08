@@ -11,6 +11,7 @@ const productRouter = require('./routers/products');
 const cartsRouter = require('./routers/carts');
 const ordersRouter = require('./routers/orders');
 const storeRouter = require('./routers/store');
+const allowedUserRouter = require('./routers/allowedUsers');
 
 app.use(cors());
 app.use(session({
@@ -27,6 +28,7 @@ app.use('/products', productRouter);
 app.use('/carts', cartsRouter);
 app.use('/orders', ordersRouter);
 app.use('/store', storeRouter);
+app.use('/allowedusers', allowedUserRouter);
 
 const DB_CONN_URL = process.env.NODE_ENV === 'test' ? process.env.DB_URL_TEST : process.env.DB_URL_DEV;
 mongoose.connect(DB_CONN_URL).then(() => {

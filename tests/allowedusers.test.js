@@ -1,6 +1,7 @@
 const supertest = require('supertest-session');
-const { app } = require('../index');
 const { allowedUser1, createAllowedUser } = require('./helpers');
+const { app } = require('../index');
+const AllowedUser = require('../models/AllowedUser');
 
 const api = supertest(app);
 
@@ -27,7 +28,8 @@ describe('CRUD operations on AllowedUsers', () => {
   test('Update an alloweduser', async () => {
     const newEmail = 'new@email.com';
     const toUpdateId = await createAllowedUser();
-    const { status } = await api.post('/allowedusers/update').send({ id: toUpdateId, data: { newEmail } });
+    const { status } = await api.post('/allowedusers/update')
+      .send({ id: toUpdateId, data: { email: newEmail } });
     expect(status).toBe(200);
     const result = await AllowedUser.findById(toUpdateId);
     expect(result.email).toBe(newEmail);

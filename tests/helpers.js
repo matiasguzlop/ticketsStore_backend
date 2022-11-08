@@ -77,7 +77,7 @@ const createStore = async () => {
 
 const createAllowedUser = async () => {
   const newAllowedUser = new AllowedUser(allowedUser1);
-  const { _id } = newAllowedUser.save();
+  const { _id } = await newAllowedUser.save();
   return _id.toString();
 };
 
@@ -86,6 +86,7 @@ module.exports = {
   adminAccount,
   product1,
   cart1,
+  allowedUser1,
   createAccount,
   createProduct,
   createCart,
