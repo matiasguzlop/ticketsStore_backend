@@ -1,8 +1,8 @@
-const { Store } = require('express-session');
 const Account = require('../models/Account');
 const Product = require('../models/Product');
 const Cart = require('../models/Cart');
 const Order = require('../models/Order');
+const Store = require('../models/Store');
 
 const initialAccount = {
   email: 'matias@company.com',
