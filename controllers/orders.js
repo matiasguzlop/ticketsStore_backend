@@ -1,14 +1,20 @@
 const Order = require('../models/Order');
+const Product = require('../models/Product');
 const APIError = require('./utils/APIError');
 const handleErrors = require('./utils/handleErrors');
 
 const newOrder = async (req, res) => {
   try {
     const { userId, products, status } = req.body;
+    const productDataPromises = products.map(async p => Product.findById(p.productId));
+    const productData = await Promise.all(productDataPromises);
+    const total = productData.map((p, i) => p.price * products[i].qty)
+      .reduce((prev, cur) => prev + cur);
     const order = new Order({
       userId,
       products,
       status,
+      total,
     });
     const response = await order.save();
     res.status(201).json({ message: response });
