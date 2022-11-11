@@ -1,4 +1,5 @@
 const AllowedUser = require('../models/AllowedUser');
+const APIError = require('./utils/APIError');
 const handleErrors = require('./utils/handleErrors');
 
 const create = async (req, res) => {
@@ -36,9 +37,10 @@ const deleteById = async (req, res) => {
   try {
     const { id } = req.body;
     const result = await AllowedUser.findByIdAndDelete(id);
+    if (result === null) throw new APIError(0);
     res.status(200).json({ message: result });
   } catch (error) {
-    handleErrors(error);
+    handleErrors(error, res);
   }
 };
 
