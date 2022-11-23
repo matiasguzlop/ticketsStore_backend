@@ -72,5 +72,11 @@ describe('CRUD for Orders', () => {
     expect(response.status).toBe('in process');
   });
 
-  // REMOVE SHOULDN'T BE IMPLEMENTED
+  test('Delete order by id', async () => {
+    const toDeleteOrderId = await createOrder(accountId);
+    const { status } = await api.delete('/orders/byId').send({ id: toDeleteOrderId });
+    expect(status).toBe(200);
+    const result = await Order.find({ id: toDeleteOrderId });
+    expect(result).toHaveLength(0);
+  });
 });

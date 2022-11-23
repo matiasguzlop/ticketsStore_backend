@@ -6,7 +6,7 @@ const handleErrors = require('./utils/handleErrors');
 const newOrder = async (req, res) => {
   try {
     const { userId, products, status } = req.body;
-    const productDataPromises = products.map(async p => Product.findById(p.productId));
+    const productDataPromises = products.map(async (p) => Product.findById(p.productId));
     const productData = await Promise.all(productDataPromises);
     const total = productData.map((p, i) => p.price * products[i].qty)
       .reduce((prev, cur) => prev + cur);
@@ -69,10 +69,25 @@ const updateStatus = async (req, res) => {
   }
 };
 
+const deleteById = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const result = await Order.findByIdAndDelete(id);
+    if (result) {
+      res.status(200).json({ message: result });
+    } else {
+      throw new APIError(0);
+    }
+  } catch (error) {
+    handleErrors(error, res);
+  }
+};
+
 module.exports = {
   newOrder,
   getById,
   getByUserId,
   getAll,
   updateStatus,
+  deleteById,
 };
