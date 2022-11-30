@@ -1,2 +1,2 @@
-# ticketsStore_backend
-This is a very basic store for selling Tickets (vouchers). It's just a prototype for a real-world requeriment.
+Tickets store (backend)
+This is a very basic store API for selling Tickets (vouchers). It's just a prototype for a real-world requeriment.
