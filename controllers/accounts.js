@@ -83,7 +83,7 @@ const isLogged = async (req, res) => {
     if (req.session.user) {
       res.status(200).end();
     } else {
-      res.redirect('/login');
+      throw new APIError(1);
     }
   } catch (error) {
     handleErrors(error, res);

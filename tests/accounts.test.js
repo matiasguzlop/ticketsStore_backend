@@ -52,7 +52,8 @@ describe('CRUD for accounts', () => {
 
   test('Log in user', async () => {
     await createAccount();
-    const { status, header } = await api.post('/accounts/login').send({ email: initialAccount.email, password: initialAccount.password });
+    const { status, header } = await api.post('/accounts/login')
+      .send({ email: initialAccount.email, password: initialAccount.password });
     expect(status).toBe(302);
     expect(header.location).toBe('/');
   });
@@ -67,9 +68,9 @@ describe('CRUD for accounts', () => {
   test('Check logged when is not logged', async () => {
     await createAccount;
     await api.post('/accounts/logout');
-    const { status, header } = await api.get('/accounts/isLogged');
-    expect(status).toBe(302);
-    expect(header.location).toBe('/login');
+    const { status } = await api.get('/accounts/isLogged');
+    expect(status).toBe(401);
+    // expect(header.location).toBe('/login');
   });
 
   test('Logout user', async () => {
@@ -77,8 +78,7 @@ describe('CRUD for accounts', () => {
     await api.post('/accounts/login').send({ email: initialAccount.email, password: initialAccount.password });
     const { status } = await api.post('/accounts/logout');
     expect(status).toBe(200);
-    const { status: status2, header } = await api.get('/accounts/isLogged');
-    expect(status2).toBe(302);
-    expect(header.location).toBe('/login');
+    const { status: status2 } = await api.get('/accounts/isLogged');
+    expect(status2).toBe(401);
   });
 });
