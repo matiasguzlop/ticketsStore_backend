@@ -4,10 +4,14 @@ const AutoIncrement = require('mongoose-sequence')(mongoose);
 const orderSchema = new mongoose.Schema({
   userId: {
     type: mongoose.SchemaTypes.ObjectId,
+    ref: 'Account',
     required: true,
   },
   products: [{
-    productId: mongoose.SchemaTypes.ObjectId,
+    productId: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Product',
+    },
     qty: Number,
   }],
   status: {
