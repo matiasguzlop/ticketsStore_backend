@@ -61,8 +61,10 @@ describe('CRUD for accounts', () => {
   test('Check logged in when is logged', async () => {
     await createAccount;
     await api.post('/accounts/login').send({ email: initialAccount.email, password: initialAccount.password });
-    const { status } = await api.get('/accounts/isLogged');
+    const { status, body } = await api.get('/accounts/isLogged');
     expect(status).toBe(200);
+    expect(body.message.user.email).toBe(initialAccount.email);
+    expect(body.message.user.attributes).toBe(initialAccount.attributes);
   });
 
   test('Check logged when is not logged', async () => {

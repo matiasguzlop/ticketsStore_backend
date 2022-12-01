@@ -68,6 +68,7 @@ const login = async (req, res) => {
     if (user === null) throw new APIError(1);
     const passwordVerification = await verifyPassword(password, user.password);
     if (passwordVerification) {
+      user.password = null;
       req.session.user = user;
       res.redirect('/');
     } else {
@@ -80,8 +81,9 @@ const login = async (req, res) => {
 
 const isLogged = async (req, res) => {
   try {
-    if (req.session.user) {
-      res.status(200).end();
+    const { user } = req.session;
+    if (user) {
+      res.status(200).json({ message: { user } });
     } else {
       throw new APIError(1);
     }
