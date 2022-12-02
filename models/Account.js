@@ -17,6 +17,7 @@ const accountSchema = new mongoose.Schema({
   },
   attributes: {
     type: String,
+    default: 'user',
     required: true,
   },
   createdAt: {

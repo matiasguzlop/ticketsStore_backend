@@ -35,6 +35,8 @@ const allowedUser1 = {
 };
 
 const createAccount = async () => {
+  const newAllowedUser = new AllowedUser({ email: initialAccount.email });
+  await newAllowedUser.save();
   const NewAccount = new Account(initialAccount);
   const { _id } = await NewAccount.save();
   return _id.toString();

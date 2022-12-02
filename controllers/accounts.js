@@ -2,14 +2,21 @@ const Account = require('../models/Account');
 const handleErrors = require('./utils/handleErrors');
 const APIError = require('./utils/APIError');
 const { hashPassword, verifyPassword } = require('./utils/hashing');
+const AllowedUser = require('../models/AllowedUser');
 
 const createAccount = async (req, res) => {
   try {
     const data = req.body;
     data.password = await hashPassword(data.password);
-    const newAccount = new Account(data);
-    const response = await newAccount.save();
-    res.status(201).json({ message: response });
+    const { email } = data;
+    const allowedUser = await AllowedUser.findOne({ email });
+    if (allowedUser) {
+      const newAccount = new Account(data);
+      const response = await newAccount.save();
+      res.status(201).json({ message: response });
+    } else {
+      throw new APIError(1);
+    }
   } catch (error) {
     handleErrors(error, res);
   }
