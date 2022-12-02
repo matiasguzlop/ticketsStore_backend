@@ -52,10 +52,9 @@ describe('CRUD for accounts', () => {
 
   test('Log in user', async () => {
     await createAccount();
-    const { status, header } = await api.post('/accounts/login')
+    const { status } = await api.post('/accounts/login')
       .send({ email: initialAccount.email, password: initialAccount.password });
-    expect(status).toBe(302);
-    expect(header.location).toBe('/');
+    expect(status).toBe(200);
   });
 
   test('Check logged in when is logged', async () => {

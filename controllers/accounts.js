@@ -76,7 +76,7 @@ const login = async (req, res) => {
     if (passwordVerification) {
       user.password = null;
       req.session.user = user;
-      res.redirect('/');
+      res.status(200).end();
     } else {
       throw new APIError(1);
     }
