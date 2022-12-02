@@ -7,7 +7,6 @@ const AllowedUser = require('../models/AllowedUser');
 const createAccount = async (req, res) => {
   try {
     const data = req.body;
-    data.password = await hashPassword(data.password);
     const { email } = data;
     const allowedUser = await AllowedUser.findOne({ email });
     if (allowedUser) {
