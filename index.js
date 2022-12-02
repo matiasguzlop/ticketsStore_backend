@@ -13,13 +13,18 @@ const ordersRouter = require('./routers/orders');
 const storeRouter = require('./routers/store');
 const allowedUserRouter = require('./routers/allowedUsers');
 
-app.use(cors());
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: { secure: false },
 }));
+
+app.use(cors({
+  credentials: true,
+  origin: 'http://localhost:5173',
+}));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
