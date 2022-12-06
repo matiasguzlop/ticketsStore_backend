@@ -11,6 +11,10 @@ const accountSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  cartId: {
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'cart',
+  },
   token: { // TODO: controllers for this (used in newAccount, update password and password recovery)
     type: String,
     // required: true,

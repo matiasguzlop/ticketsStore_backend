@@ -1,8 +1,11 @@
+/* eslint-disable max-len */
+/* eslint-disable no-underscore-dangle */
 const Account = require('../models/Account');
 const handleErrors = require('./utils/handleErrors');
 const APIError = require('./utils/APIError');
 const { hashPassword, verifyPassword } = require('./utils/hashing');
 const AllowedUser = require('../models/AllowedUser');
+const Cart = require('../models/Cart');
 
 const createAccount = async (req, res) => {
   try {
@@ -12,6 +15,10 @@ const createAccount = async (req, res) => {
     if (allowedUser) {
       const newAccount = new Account(data);
       const response = await newAccount.save();
+      const justCreatedAccountId = response._id;
+      const newCart = new Cart({ userId: justCreatedAccountId }); // this is not the best approach but design is not optimal. Have to be refactorized in future.
+      const userCart = await newCart.save();
+      await Account.findByIdAndUpdate(justCreatedAccountId, { cartId: userCart._id });
       res.status(201).json({ message: response });
     } else {
       throw new APIError(1);
@@ -28,7 +35,7 @@ const getById = async (req, res) => {
     if (response) {
       res.status(200).json({ message: response });
     } else {
-      throw APIError(0);
+      throw new APIError(0);
     }
   } catch (error) {
     handleErrors(error, res);

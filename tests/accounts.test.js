@@ -14,11 +14,12 @@ beforeEach(async () => {
 });
 
 describe('CRUD for accounts', () => {
-  test('Create an account', async () => {
+  test('Create an account with a cart', async () => {
     const { status } = await api.post('/accounts/new').send(initialAccount);
     expect(status).toBe(201);
     const response = await Account.findOne({});
     expect(response.email).toBe(initialAccount.email);
+    expect(response.cartId).not.toBe(undefined);
   });
 
   test('Read an account', async () => {
