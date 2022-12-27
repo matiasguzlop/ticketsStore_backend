@@ -79,4 +79,16 @@ describe('CRUD for Orders', () => {
     const result = await Order.find({ id: toDeleteOrderId });
     expect(result).toHaveLength(0);
   });
+
+  test('Get orders passing a time range', async () => {
+    const range = {
+      from: '2022-11-27',
+      to: '2022-12-28',
+    };
+    const productId = await createProduct();
+    await createOrder(accountId, productId);
+    const { status, body } = await api.get('/orders/all').query(range);
+    expect(status).toBe(200);
+    expect(body.message).toHaveLength(1);
+  });
 });

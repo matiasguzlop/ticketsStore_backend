@@ -52,7 +52,18 @@ const getByUserId = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
-    const response = await Order.find({});
+    const { from, to } = req.query;
+    let response;
+    if (from && to) {
+      response = await Order.find({
+        createdAt: {
+          $gte: new Date(from),
+          $lte: new Date(to),
+        },
+      });
+    } else {
+      response = await Order.find({});
+    }
     res.status(200).json({ message: response });
   } catch (error) {
     handleErrors(error, res);
@@ -91,8 +102,9 @@ const exportExcel = async (req, res) => {
   // 2nd table: get all products in orders and group them by productid, indicating all qty for a product.
 
   try {
-    // const {from,to} = req.body; //TODO
     // TODO: return only PAID and PENDING orders, ignore CANCELLED and DELIVERED ones
+    // const { from, to } = req.body;
+    // console.log({ from }, { to });
     const orders = await Order.find({}).populate({
       path: 'products',
       populate: {
@@ -108,7 +120,7 @@ const exportExcel = async (req, res) => {
       .flatMap((order) => order.products
         .map((product) => (
           {
-            productId: product.productId.id,
+            productId: product.productId.id ?? 'producto no existente',
             productName: product.productId.name,
             productPrice: product.productId.price,
             qty: product.qty,
